@@ -284,7 +284,7 @@
       <div class="logo-text">Positano Wine Festival</div>
       <div class="event-meta">Vie 24 Jul · Metropolitano</div>
     </div>
-    <div class="user-pill" id="user-pill">
+    <div class="user-pill" id="user-pill" onclick="showMyProfile()">
       <div class="user-pill-avatar" id="header-avatar"></div>
       <span class="user-pill-name" id="header-name">Yo</span>
     </div>
@@ -366,6 +366,40 @@
     Escribirle por WhatsApp
   </button>
   <button class="btn-match-close" onclick="closeMatchNotif()">Cerrar</button>
+</div>
+
+<!-- MY PROFILE SHEET -->
+<div class="sheet-overlay" id="my-profile-sheet" onclick="closeMyProfile(event)">
+  <div class="sheet">
+    <div class="sheet-handle"></div>
+    <div style="padding: 0 24px 8px;">
+      <div style="font-size:18px;font-weight:700;margin-bottom:20px;">Mi perfil</div>
+
+      <!-- Avatar editable -->
+      <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-bottom:24px;">
+        <div id="my-profile-avatar-preview" onclick="document.getElementById('my-profile-photo-input').click()"
+          style="width:88px;height:88px;border-radius:50%;border:2px dashed #444;overflow:hidden;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;">
+        </div>
+        <div style="font-size:12px;color:#555;">Tocá la foto para cambiarla</div>
+        <input type="file" id="my-profile-photo-input" accept="image/*" style="display:none;">
+      </div>
+
+      <!-- Nombre -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">Nombre o apodo</label>
+        <input class="input-field" id="my-profile-name" type="text" maxlength="20" />
+      </div>
+
+      <!-- Teléfono -->
+      <div style="margin-bottom:16px;">
+        <label class="form-label">Celular <span style="color:#333;font-weight:400;text-transform:none;">(para matches)</span></label>
+        <input class="input-field" id="my-profile-phone" type="tel" placeholder="Ej: 3411234567" />
+      </div>
+
+      <button class="btn-primary" id="btn-save-my-profile" style="margin-top:8px;">Guardar cambios</button>
+      <div style="height:16px;"></div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -723,7 +757,60 @@ window.switchTab = function(tab) {
   document.getElementById(`tab-btn-${tab}`).classList.add('active');
 };
 
-// ── PRODUCTS ──
+// ── MY PROFILE ──
+let myProfilePhotoBase64 = '';
+
+document.getElementById('my-profile-photo-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    myProfilePhotoBase64 = ev.target.result;
+    document.getElementById('my-profile-avatar-preview').innerHTML = `<img src="${myProfilePhotoBase64}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+  };
+  reader.readAsDataURL(file);
+});
+
+window.showMyProfile = function() {
+  // Fill current data
+  document.getElementById('my-profile-name').value = currentProfile.name || '';
+  document.getElementById('my-profile-phone').value = currentProfile.phone || '';
+  myProfilePhotoBase64 = '';
+
+  const preview = document.getElementById('my-profile-avatar-preview');
+  preview.innerHTML = makeAvatar(currentProfile, 88, 36);
+
+  document.getElementById('my-profile-sheet').classList.add('open');
+};
+
+window.closeMyProfile = function(e) {
+  if (!e || e.target === document.getElementById('my-profile-sheet'))
+    document.getElementById('my-profile-sheet').classList.remove('open');
+};
+
+document.getElementById('btn-save-my-profile').onclick = async () => {
+  const name = document.getElementById('my-profile-name').value.trim();
+  const phone = document.getElementById('my-profile-phone').value.trim();
+  if (!name) return showToast('Poné tu nombre');
+
+  const btn = document.getElementById('btn-save-my-profile');
+  btn.disabled = true; btn.textContent = 'Guardando...';
+
+  const photoURL = myProfilePhotoBase64 || currentProfile.photoURL || '';
+
+  const updated = { ...currentProfile, name, phone, photoURL };
+  await setDoc(doc(db,'users',currentUser.uid), updated);
+  currentProfile = updated;
+
+  // Update header
+  document.getElementById('header-avatar').innerHTML = makeAvatar(currentProfile, 28, 11);
+  document.getElementById('header-name').textContent = currentProfile.name.split(' ')[0];
+
+  btn.disabled = false; btn.textContent = 'Guardar cambios';
+  closeMyProfile();
+  showToast('Perfil actualizado ✓');
+};
+
 function renderProducts() {
   const list = document.getElementById('products-list');
   list.innerHTML = '';
@@ -765,5 +852,3 @@ document.getElementById('btn-checkout').onclick = async () => {
 </script>
 </body>
 </html>
-HTMLEOF
-echo "OK - $(wc -l < /home/claude/positano-festival/index.html) lines" 
