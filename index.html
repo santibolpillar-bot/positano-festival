@@ -568,6 +568,23 @@ function getSelectedChips(gridId) {
   return [...document.querySelectorAll(`#${gridId} .chip.sel`)].map(c => c.dataset.val);
 }
 
+// ── IMAGE RESIZE ──
+function resizeImage(base64, maxSize) {
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement('canvas');
+      let w = img.width, h = img.height;
+      if (w > h) { if (w > maxSize) { h = h * maxSize / w; w = maxSize; } }
+      else { if (h > maxSize) { w = w * maxSize / h; h = maxSize; } }
+      canvas.width = w; canvas.height = h;
+      canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+      resolve(canvas.toDataURL('image/jpeg', 0.7));
+    };
+    img.src = base64;
+  });
+}
+
 // ── SAVE PROFILE ──
 document.getElementById('btn-save-profile').onclick = async () => {
   const drinks = getSelectedChips('chips-drink');
@@ -583,7 +600,7 @@ document.getElementById('btn-save-profile').onclick = async () => {
   if (isGuestMode) {
     name = guestName;
     phone = guestPhone;
-    photoURL = guestPhotoBase64 || '';
+    photoURL = guestPhotoBase64 ? await resizeImage(guestPhotoBase64, 300) : '';
   } else {
     name = (document.getElementById('onb-display-name').textContent || currentUser.displayName || '').split(' ')[0];
     phone = document.getElementById('onb-phone')?.value?.trim() || '';
@@ -796,19 +813,28 @@ document.getElementById('btn-save-my-profile').onclick = async () => {
   const btn = document.getElementById('btn-save-my-profile');
   btn.disabled = true; btn.textContent = 'Guardando...';
 
-  const photoURL = myProfilePhotoBase64 || currentProfile.photoURL || '';
+  try {
+    // Only save new photo if user explicitly picked one AND it's small enough
+    let photoURL = currentProfile.photoURL || '';
+    if (myProfilePhotoBase64) {
+      // Resize image before saving to stay under Firestore 1MB limit
+      photoURL = await resizeImage(myProfilePhotoBase64, 300);
+    }
 
-  const updated = { ...currentProfile, name, phone, photoURL };
-  await setDoc(doc(db,'users',currentUser.uid), updated);
-  currentProfile = updated;
+    const updated = { ...currentProfile, name, phone, photoURL };
+    await setDoc(doc(db,'users',currentUser.uid), updated);
+    currentProfile = updated;
 
-  // Update header
-  document.getElementById('header-avatar').innerHTML = makeAvatar(currentProfile, 28, 11);
-  document.getElementById('header-name').textContent = currentProfile.name.split(' ')[0];
+    document.getElementById('header-avatar').innerHTML = makeAvatar(currentProfile, 28, 11);
+    document.getElementById('header-name').textContent = currentProfile.name.split(' ')[0];
 
-  btn.disabled = false; btn.textContent = 'Guardar cambios';
-  closeMyProfile();
-  showToast('Perfil actualizado ✓');
+    btn.disabled = false; btn.textContent = 'Guardar cambios';
+    closeMyProfile();
+    showToast('Perfil actualizado ✓');
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Guardar cambios';
+    showToast('Error al guardar. Intentá sin foto.');
+  }
 };
 
 function renderProducts() {
