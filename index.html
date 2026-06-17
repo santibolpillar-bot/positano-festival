@@ -6,87 +6,65 @@
   <title>Positano Wine Festival</title>
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#000000" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0a; color: #fff; min-height: 100vh;
-      max-width: 480px; margin: 0 auto; position: relative;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #0a0a0a; color: #fff; min-height: 100vh; max-width: 480px; margin: 0 auto; }
     .screen { display: none; min-height: 100vh; flex-direction: column; }
     .screen.active { display: flex; }
 
     /* SPLASH */
-    #screen-splash {
-      background: #000; align-items: center; justify-content: center;
-      flex-direction: column; gap: 20px; padding: 40px 24px;
-    }
+    #screen-splash { background: #000; align-items: center; justify-content: center; flex-direction: column; gap: 20px; padding: 40px 24px; }
     .splash-title { font-size: 28px; font-weight: 700; color: #F5E642; text-align: center; line-height: 1.2; }
     .splash-event-info { background: #111; border: 1px solid #222; border-radius: 16px; padding: 16px 24px; text-align: center; }
     .splash-event-info .date { font-size: 16px; font-weight: 600; color: #F5E642; }
     .splash-event-info .venue { font-size: 13px; color: #666; margin-top: 4px; }
-
-    /* DIVIDER */
     .or-divider { display: flex; align-items: center; gap: 12px; width: 100%; max-width: 300px; }
     .or-divider::before, .or-divider::after { content: ''; flex: 1; height: 1px; background: #222; }
     .or-divider span { font-size: 12px; color: #444; white-space: nowrap; }
 
     /* BUTTONS */
-    .btn-google {
-      display: flex; align-items: center; gap: 12px; background: #fff; color: #1a1a1a;
-      border: none; border-radius: 50px; padding: 14px 28px; font-size: 15px; font-weight: 600;
-      cursor: pointer; width: 300px; justify-content: center;
-    }
+    .btn-google { display: flex; align-items: center; gap: 12px; background: #fff; color: #1a1a1a; border: none; border-radius: 50px; padding: 14px 28px; font-size: 15px; font-weight: 600; cursor: pointer; width: 300px; justify-content: center; }
     .btn-google svg { width: 20px; height: 20px; flex-shrink: 0; }
-    .btn-google:active { opacity: 0.85; }
-    .btn-guest {
-      display: flex; align-items: center; gap: 8px; background: transparent; color: #aaa;
-      border: 1px solid #333; border-radius: 50px; padding: 13px 28px; font-size: 15px; font-weight: 500;
-      cursor: pointer; width: 300px; justify-content: center;
-    }
-    .btn-guest:active { background: #111; }
-    .btn-primary {
-      width: 100%; background: #F5E642; color: #000; border: none; border-radius: 50px;
-      padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer;
-    }
-    .btn-primary:active { opacity: 0.85; }
+    .btn-guest { display: flex; align-items: center; gap: 8px; background: transparent; color: #aaa; border: 1px solid #333; border-radius: 50px; padding: 13px 28px; font-size: 15px; font-weight: 500; cursor: pointer; width: 300px; justify-content: center; }
+    .btn-primary { width: 100%; background: #F5E642; color: #000; border: none; border-radius: 50px; padding: 16px; font-size: 16px; font-weight: 700; cursor: pointer; }
     .btn-primary:disabled { opacity: 0.35; pointer-events: none; }
-    .btn-back {
-      background: none; border: none; color: #555; font-size: 14px; cursor: pointer;
-      padding: 8px 0; text-align: left;
-    }
+    .btn-back { background: none; border: none; color: #555; font-size: 14px; cursor: pointer; padding: 8px 0; text-align: left; }
 
-    /* GUEST LOGIN FORM */
+    /* GUEST FORM */
     #screen-guest { background: #000; align-items: center; justify-content: center; flex-direction: column; gap: 20px; padding: 40px 24px; }
     .guest-form { width: 100%; max-width: 320px; display: flex; flex-direction: column; gap: 14px; }
     .guest-form h2 { font-size: 22px; font-weight: 700; color: #fff; margin-bottom: 4px; }
-    .guest-form p { font-size: 14px; color: #555; margin-bottom: 8px; }
-    .input-field {
-      width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 12px;
-      padding: 13px 16px; font-size: 15px; color: #fff; outline: none;
-    }
+    .guest-form p { font-size: 14px; color: #555; margin-bottom: 4px; }
+    .input-field { width: 100%; background: #111; border: 1px solid #2a2a2a; border-radius: 12px; padding: 13px 16px; font-size: 15px; color: #fff; outline: none; }
     .input-field:focus { border-color: #F5E642; }
     .input-field::placeholder { color: #444; }
 
+    /* PHOTO UPLOAD */
+    .photo-upload-wrap { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+    .photo-preview {
+      width: 88px; height: 88px; border-radius: 50%; background: #1a1a1a;
+      border: 2px dashed #333; display: flex; align-items: center; justify-content: center;
+      cursor: pointer; overflow: hidden; position: relative; flex-shrink: 0;
+    }
+    .photo-preview img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+    .photo-preview .photo-icon { font-size: 28px; color: #444; }
+    .photo-preview-initials { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 32px; font-weight: 700; border-radius: 50%; }
+    .photo-hint { font-size: 12px; color: #444; text-align: center; }
+    #guest-photo-input { display: none; }
+
     /* ONBOARDING */
     #screen-onboarding { background: #0a0a0a; }
-    .onb-header {
-      background: #000; padding: 20px 20px 16px; border-bottom: 1px solid #1a1a1a;
-      display: flex; align-items: center; gap: 12px; flex-shrink: 0;
-    }
-    .onb-avatar {
-      width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center;
-      justify-content: center; font-size: 18px; font-weight: 700; color: #000;
-      overflow: hidden; flex-shrink: 0;
-    }
+    .onb-header { background: #000; padding: 20px 20px 16px; border-bottom: 1px solid #1a1a1a; display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .onb-avatar { width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 700; overflow: hidden; flex-shrink: 0; }
     .onb-avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
     .onb-body { padding: 24px 20px; flex: 1; overflow-y: auto; }
     .onb-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
     .onb-subtitle { font-size: 14px; color: #666; margin-bottom: 28px; }
     .form-section { margin-bottom: 24px; }
     .form-label { font-size: 11px; font-weight: 600; color: #555; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; display: block; }
+    .form-label span { color: #333; font-weight: 400; text-transform: none; letter-spacing: 0; }
     .chip-grid { display: flex; flex-wrap: wrap; gap: 8px; }
     .chip { padding: 8px 14px; border-radius: 50px; border: 1px solid #2a2a2a; font-size: 13px; cursor: pointer; color: #888; background: #111; transition: all 0.15s; user-select: none; }
     .chip.sel { background: #F5E642; border-color: #F5E642; color: #000; font-weight: 600; }
@@ -119,13 +97,13 @@
     .person-card-initials { width: 100%; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 42px; font-weight: 700; }
     .person-card-info { padding: 10px 12px 12px; }
     .person-card-name { font-size: 14px; font-weight: 600; color: #fff; }
-    .person-card-drink { font-size: 11px; color: #555; margin-top: 2px; }
-    .vibe-pill { display: inline-block; margin-top: 7px; padding: 3px 8px; border-radius: 50px; font-size: 10px; font-weight: 600; background: #1a1a00; color: #F5E642; border: 1px solid #2a2a00; }
+    .person-card-drink { font-size: 11px; color: #555; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .vibe-pill { display: inline-block; margin-top: 7px; padding: 3px 8px; border-radius: 50px; font-size: 10px; font-weight: 600; background: #1a1a00; color: #F5E642; border: 1px solid #2a2a00; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
     /* PROFILE SHEET */
     .sheet-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.75); z-index: 200; display: none; align-items: flex-end; justify-content: center; }
     .sheet-overlay.open { display: flex; }
-    .sheet { background: #111; width: 100%; max-width: 480px; border-radius: 24px 24px 0 0; padding: 0 0 40px; max-height: 85vh; overflow-y: auto; }
+    .sheet { background: #111; width: 100%; max-width: 480px; border-radius: 24px 24px 0 0; padding: 0 0 40px; max-height: 88vh; overflow-y: auto; }
     .sheet-handle { width: 36px; height: 4px; background: #333; border-radius: 2px; margin: 14px auto 20px; }
     .sheet-avatar-lg { width: 88px; height: 88px; border-radius: 50%; border: 3px solid #F5E642; display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; margin: 0 auto 14px; overflow: hidden; }
     .sheet-avatar-lg img { width: 100%; height: 100%; object-fit: cover; }
@@ -134,20 +112,25 @@
     .sheet-divider { height: 1px; background: #1e1e1e; margin: 20px 0; }
     .sheet-body { padding: 0 24px; }
     .sheet-row { margin-bottom: 16px; }
-    .sheet-row-label { font-size: 10px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 5px; }
-    .sheet-row-value { font-size: 14px; color: #ccc; }
+    .sheet-row-label { font-size: 10px; font-weight: 600; color: #444; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+    .sheet-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .sheet-tag { padding: 4px 10px; border-radius: 50px; font-size: 12px; background: #1a1a1a; color: #ccc; border: 1px solid #2a2a2a; }
     .sheet-actions { display: flex; gap: 10px; padding: 0 24px; margin-top: 24px; }
     .btn-pass { flex: 1; padding: 14px; background: #1a1a1a; color: #888; border: 1px solid #2a2a2a; border-radius: 50px; font-size: 14px; font-weight: 600; cursor: pointer; }
     .btn-like { flex: 2; padding: 14px; background: #F5E642; color: #000; border: none; border-radius: 50px; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
-    .btn-like.sent { background: #2a2a00; color: #F5E642; border: 1px solid #3a3a00; }
+    .btn-like.sent { background: #2a2a00; color: #F5E642; border: 1px solid #3a3a00; pointer-events: none; }
 
     /* MATCH NOTIFICATION */
-    .match-notification { position: fixed; inset: 0; background: rgba(0,0,0,0.92); z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
+    .match-notification { position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 300; display: none; flex-direction: column; align-items: center; justify-content: center; padding: 40px; text-align: center; }
     .match-notification.open { display: flex; }
     .match-notification h2 { font-size: 32px; font-weight: 800; color: #F5E642; margin-bottom: 8px; }
-    .match-notification p { font-size: 16px; color: #888; line-height: 1.5; }
-    .match-phone { font-size: 22px; font-weight: 700; color: #fff; background: #111; border: 1px solid #F5E642; border-radius: 12px; padding: 14px 24px; margin: 16px 0 24px; }
-    .btn-match-close { background: #F5E642; color: #000; border: none; border-radius: 50px; padding: 14px 40px; font-size: 15px; font-weight: 700; cursor: pointer; }
+    .match-notification p { font-size: 15px; color: #888; line-height: 1.5; }
+    .match-avatars { display: flex; align-items: center; gap: 16px; margin: 20px 0; }
+    .match-avatar { width: 72px; height: 72px; border-radius: 50%; border: 3px solid #F5E642; overflow: hidden; display: flex; align-items: center; justify-content: center; font-size: 28px; font-weight: 700; }
+    .match-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .match-heart { font-size: 28px; }
+    .btn-whatsapp { display: flex; align-items: center; justify-content: center; gap: 10px; background: #25D366; color: #fff; border: none; border-radius: 50px; padding: 16px 28px; font-size: 16px; font-weight: 700; cursor: pointer; width: 100%; max-width: 280px; margin: 16px 0 12px; }
+    .btn-match-close { background: transparent; color: #555; border: 1px solid #333; border-radius: 50px; padding: 12px 28px; font-size: 14px; cursor: pointer; }
 
     /* ORDERS */
     .orders-section { padding: 16px; }
@@ -160,7 +143,6 @@
     .product-price { font-size: 14px; font-weight: 700; color: #F5E642; margin-top: 3px; }
     .qty-ctrl { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     .qty-btn { width: 32px; height: 32px; border-radius: 50%; border: 1px solid #2a2a2a; background: #1a1a1a; color: #fff; font-size: 18px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-    .qty-btn:active { background: #2a2a2a; }
     .qty-num { font-size: 15px; font-weight: 700; min-width: 20px; text-align: center; color: #fff; }
     .cart-bar { position: sticky; bottom: 0; background: #000; border-top: 1px solid #1e1e1e; padding: 14px 20px; display: none; }
     .cart-bar.visible { display: block; }
@@ -183,14 +165,12 @@
 </head>
 <body>
 
-<!-- LOADING -->
 <div id="loading-overlay">
   <div style="font-size:20px;font-weight:700;color:#F5E642;letter-spacing:0.1em;">POSITANO</div>
   <div class="spinner"></div>
   <p>Cargando el evento...</p>
 </div>
 
-<!-- SPLASH -->
 <div id="screen-splash" class="screen">
   <div style="font-size:56px;">🍷</div>
   <div>
@@ -208,26 +188,29 @@
       Entrar con Google
     </button>
     <div class="or-divider"><span>o si no tenés Gmail</span></div>
-    <button class="btn-guest" id="btn-guest-login">
-      👤 Entrar con nombre y celu
-    </button>
-    <div style="font-size:11px;color:#2a2a2a;text-align:center;padding:0 20px;">Con Google tu foto de perfil aparece automáticamente</div>
+    <button class="btn-guest" id="btn-guest-login">👤 Entrar con nombre y celu</button>
+    <div style="font-size:11px;color:#2a2a2a;text-align:center;padding:0 20px;">Con Google tu foto aparece automáticamente</div>
   </div>
 </div>
 
-<!-- GUEST LOGIN -->
 <div id="screen-guest" class="screen">
   <div class="guest-form">
     <button class="btn-back" onclick="showScreen('screen-splash')">← Volver</button>
     <h2>¿Cómo te llamás?</h2>
-    <p>Tu nombre y celu para que puedan contactarte si hay match</p>
+    <p>Tu info para que puedan contactarte si hay match</p>
+    <div class="photo-upload-wrap">
+      <div class="photo-preview" id="guest-photo-preview" onclick="document.getElementById('guest-photo-input').click()">
+        <div class="photo-icon">📷</div>
+      </div>
+      <div class="photo-hint">Tocá para subir una foto (opcional)</div>
+      <input type="file" id="guest-photo-input" accept="image/*" />
+    </div>
     <input class="input-field" id="guest-name" type="text" placeholder="Tu nombre o apodo" maxlength="20" />
-    <input class="input-field" id="guest-phone" type="tel" placeholder="Tu número de celular" />
+    <input class="input-field" id="guest-phone" type="tel" placeholder="Tu número de celular (ej: 3411234567)" />
     <button class="btn-primary" id="btn-guest-continue">Continuar →</button>
   </div>
 </div>
 
-<!-- ONBOARDING -->
 <div id="screen-onboarding" class="screen">
   <div class="onb-header">
     <div class="onb-avatar" id="onb-avatar-display"></div>
@@ -238,34 +221,55 @@
   </div>
   <div class="onb-body">
     <div class="onb-title">¿Cómo querés que te vean?</div>
-    <div class="onb-subtitle">Esto aparece en tu perfil para los demás asistentes</div>
+    <div class="onb-subtitle">Elegí todo lo que aplique — se muestra en tu perfil</div>
 
     <div class="form-section" id="section-phone-onb" style="display:none;">
-      <label class="form-label">Tu número de celular <span style="color:#333">(si hay match)</span></label>
-      <input class="input-field" id="onb-phone" type="tel" placeholder="Ej: 341 555-1234" />
+      <label class="form-label">Tu número de celular <span>(si hay match)</span></label>
+      <input class="input-field" id="onb-phone" type="tel" placeholder="Ej: 3411234567" />
     </div>
 
     <div class="form-section">
-      <label class="form-label">¿Qué tomás hoy?</label>
+      <label class="form-label">¿Qué tomás hoy? <span>Elegí uno o varios</span></label>
       <div class="chip-grid" id="chips-drink">
         <div class="chip" data-val="Vinos tintos">🍷 Tintos</div>
         <div class="chip" data-val="Vinos blancos">🥂 Blancos</div>
         <div class="chip" data-val="Espumantes">🍾 Espumantes</div>
+        <div class="chip" data-val="Rosé">🌹 Rosé</div>
         <div class="chip" data-val="Cerveza artesanal">🍺 Cerveza</div>
         <div class="chip" data-val="Spirits">🥃 Spirits</div>
+        <div class="chip" data-val="Gin tonic">🍸 Gin tonic</div>
+        <div class="chip" data-val="Sin alcohol">💧 Sin alcohol</div>
         <div class="chip" data-val="De todo un poco">✨ De todo</div>
       </div>
     </div>
 
     <div class="form-section">
-      <label class="form-label">¿Qué buscás hoy?</label>
+      <label class="form-label">¿Qué buscás hoy? <span>Elegí uno o varios</span></label>
       <div class="chip-grid" id="chips-vibe">
-        <div class="chip" data-val="Conocer gente nueva">👋 Conocer gente</div>
+        <div class="chip" data-val="Conocer gente">👋 Conocer gente</div>
         <div class="chip" data-val="Hablar de vinos">🍷 Hablar de vinos</div>
         <div class="chip" data-val="Networking">💼 Networking</div>
         <div class="chip" data-val="Bailar">💃 Bailar</div>
         <div class="chip" data-val="Pasarla bien">🎉 Pasarla bien</div>
         <div class="chip" data-val="Hacer amigos">🤝 Hacer amigos</div>
+        <div class="chip" data-val="Charlar y tomar">🗣️ Charlar y tomar</div>
+        <div class="chip" data-val="Algo romántico">💘 Algo romántico</div>
+      </div>
+    </div>
+
+    <div class="form-section">
+      <label class="form-label">Intereses <span>Opcional — ayuda a encontrar afinidad</span></label>
+      <div class="chip-grid" id="chips-interests">
+        <div class="chip" data-val="Gastronomía">🍽️ Gastronomía</div>
+        <div class="chip" data-val="Música">🎵 Música</div>
+        <div class="chip" data-val="Viajes">✈️ Viajes</div>
+        <div class="chip" data-val="Arte">🎨 Arte</div>
+        <div class="chip" data-val="Deportes">⚽ Deportes</div>
+        <div class="chip" data-val="Tecnología">💻 Tech</div>
+        <div class="chip" data-val="Emprendimiento">🚀 Emprendimiento</div>
+        <div class="chip" data-val="Naturaleza">🌿 Naturaleza</div>
+        <div class="chip" data-val="Cine y series">🎬 Cine y series</div>
+        <div class="chip" data-val="Fotografía">📷 Fotografía</div>
       </div>
     </div>
 
@@ -274,7 +278,6 @@
   </div>
 </div>
 
-<!-- MAIN APP -->
 <div id="screen-main" class="screen">
   <div class="app-header">
     <div>
@@ -321,7 +324,6 @@
   </div>
 </div>
 
-<!-- PROFILE SHEET -->
 <div class="sheet-overlay" id="profile-sheet" onclick="closeSheet(event)">
   <div class="sheet">
     <div class="sheet-handle"></div>
@@ -330,8 +332,18 @@
     <div class="sheet-meta">En el evento ahora 🟢</div>
     <div class="sheet-divider"></div>
     <div class="sheet-body">
-      <div class="sheet-row"><div class="sheet-row-label">Tomando hoy</div><div class="sheet-row-value" id="sheet-drink"></div></div>
-      <div class="sheet-row"><div class="sheet-row-label">Busca</div><div class="sheet-row-value" id="sheet-vibe"></div></div>
+      <div class="sheet-row" id="sheet-row-drink">
+        <div class="sheet-row-label">Tomando hoy</div>
+        <div class="sheet-tags" id="sheet-drink"></div>
+      </div>
+      <div class="sheet-row" id="sheet-row-vibe">
+        <div class="sheet-row-label">Busca</div>
+        <div class="sheet-tags" id="sheet-vibe"></div>
+      </div>
+      <div class="sheet-row" id="sheet-row-interests" style="display:none;">
+        <div class="sheet-row-label">Intereses</div>
+        <div class="sheet-tags" id="sheet-interests"></div>
+      </div>
     </div>
     <div class="sheet-actions">
       <button class="btn-pass" onclick="closeSheet()">Pasar</button>
@@ -340,14 +352,20 @@
   </div>
 </div>
 
-<!-- MATCH NOTIFICATION -->
 <div class="match-notification" id="match-notification">
-  <div style="font-size:64px;margin-bottom:16px;">🎉</div>
+  <div style="font-size:48px;margin-bottom:8px;">🎉</div>
   <h2>¡Es un match!</h2>
   <p id="match-notif-text"></p>
-  <div class="match-phone" id="match-phone-display"></div>
-  <p style="font-size:12px;color:#444;margin-bottom:24px;">Mandá un mensaje y empiecen a hablar</p>
-  <button class="btn-match-close" onclick="closeMatchNotif()">Genial, gracias 🍷</button>
+  <div class="match-avatars">
+    <div class="match-avatar" id="match-my-avatar"></div>
+    <div class="match-heart">❤️</div>
+    <div class="match-avatar" id="match-their-avatar"></div>
+  </div>
+  <button class="btn-whatsapp" id="btn-whatsapp-match">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    Escribirle por WhatsApp
+  </button>
+  <button class="btn-match-close" onclick="closeMatchNotif()">Cerrar</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -370,22 +388,11 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 
-// Palette for guest avatars
 const COLORS = [
   {bg:'#3B1F6B',text:'#C89EF5'},{bg:'#1F3B6B',text:'#9EC4F5'},
   {bg:'#1F6B3B',text:'#9EF5C4'},{bg:'#6B3B1F',text:'#F5C49E'},
   {bg:'#6B1F3B',text:'#F59EC4'},{bg:'#4B3B1F',text:'#F5D89E'},
 ];
-
-let currentUser = null;
-let currentProfile = null;
-let allUsers = [];
-let cart = {};
-let selectedPersonId = null;
-let myLikes = new Set();
-let isGuestMode = false;
-let guestName = '';
-let guestPhone = '';
 
 const PRODUCTS = [
   {id:'p1',name:'Luigi Bosca Malbec',desc:'Mendoza · 750ml',price:3200,emoji:'🍷'},
@@ -397,6 +404,17 @@ const PRODUCTS = [
   {id:'p7',name:'Rutini Trumpeter Malbec',desc:'Mendoza · 750ml',price:2600,emoji:'🍷'},
   {id:'p8',name:'Agua mineral 500ml',desc:'Sin gas',price:800,emoji:'💧'},
 ];
+
+let currentUser = null;
+let currentProfile = null;
+let allUsers = [];
+let cart = {};
+let selectedPersonId = null;
+let myLikes = new Set();
+let isGuestMode = false;
+let guestName = '';
+let guestPhone = '';
+let guestPhotoBase64 = '';
 
 // ── UTILS ──
 function showToast(msg) {
@@ -421,19 +439,37 @@ function getInitials(name) {
 
 function getColor(uid) {
   let h = 0;
-  for (let i=0;i<uid.length;i++) h = Math.imul(31,h)+uid.charCodeAt(i)|0;
+  for (let i=0;i<(uid||'x').length;i++) h = Math.imul(31,h)+(uid||'x').charCodeAt(i)|0;
   return COLORS[Math.abs(h) % COLORS.length];
 }
 
-function avatarHTML(profile, size=44, fontSize=18) {
+function makeAvatar(profile, size=44, fontSize=18) {
   if (profile.photoURL) {
     return `<img src="${profile.photoURL}" style="width:${size}px;height:${size}px;border-radius:50%;object-fit:cover;" alt="${profile.name}">`;
   }
-  const c = getColor(profile.uid||profile.name);
+  const c = getColor(profile.uid||profile.name||'x');
   return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${c.bg};display:flex;align-items:center;justify-content:center;font-size:${fontSize}px;font-weight:700;color:${c.text};flex-shrink:0;">${getInitials(profile.name)}</div>`;
 }
 
-// ── AUTH STATE ──
+function tagsHTML(arr) {
+  if (!arr || !arr.length) return '';
+  return (Array.isArray(arr) ? arr : [arr]).map(v => `<span class="sheet-tag">${v}</span>`).join('');
+}
+
+// ── GUEST PHOTO UPLOAD ──
+document.getElementById('guest-photo-input').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    guestPhotoBase64 = ev.target.result;
+    const preview = document.getElementById('guest-photo-preview');
+    preview.innerHTML = `<img src="${guestPhotoBase64}" alt="foto">`;
+  };
+  reader.readAsDataURL(file);
+});
+
+// ── AUTH ──
 onAuthStateChanged(auth, async (user) => {
   hideLoading();
   if (!user) { showScreen('screen-splash'); return; }
@@ -443,45 +479,33 @@ onAuthStateChanged(auth, async (user) => {
     currentProfile = snap.data();
     enterApp();
   } else {
-    // Pre-fill onboarding
     const avatarEl = document.getElementById('onb-avatar-display');
     if (user.isAnonymous) {
-      // Guest — name/phone already captured
       document.getElementById('onb-display-name').textContent = guestName || 'Invitado';
       const c = getColor(user.uid);
-      avatarEl.style.background = c.bg;
-      avatarEl.style.color = c.text;
-      avatarEl.style.fontSize = '18px';
+      avatarEl.style.cssText = `background:${c.bg};color:${c.text};font-size:18px;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;`;
       avatarEl.textContent = getInitials(guestName);
-      // Hide phone field (already captured)
       document.getElementById('section-phone-onb').style.display = 'none';
     } else {
-      document.getElementById('onb-display-name').textContent = user.displayName || 'Invitado';
+      document.getElementById('onb-display-name').textContent = user.displayName || '';
       if (user.photoURL) {
         avatarEl.innerHTML = `<img src="${user.photoURL}" style="width:44px;height:44px;object-fit:cover;border-radius:50%;">`;
       } else {
         const c = getColor(user.uid);
-        avatarEl.style.background = c.bg;
-        avatarEl.style.color = c.text;
+        avatarEl.style.cssText = `background:${c.bg};color:${c.text};font-size:18px;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;`;
         avatarEl.textContent = getInitials(user.displayName);
       }
-      // Show phone field for Google users
       document.getElementById('section-phone-onb').style.display = 'block';
     }
     showScreen('screen-onboarding');
   }
 });
 
-// ── GOOGLE LOGIN ──
 document.getElementById('btn-google-login').onclick = async () => {
-  try {
-    await signInWithPopup(auth, new GoogleAuthProvider());
-  } catch(e) {
-    showToast('Error al iniciar sesión. Intentá de nuevo.');
-  }
+  try { await signInWithPopup(auth, new GoogleAuthProvider()); }
+  catch(e) { showToast('Error al iniciar sesión. Intentá de nuevo.'); }
 };
 
-// ── GUEST LOGIN ──
 document.getElementById('btn-guest-login').onclick = () => {
   showScreen('screen-guest');
   setTimeout(() => document.getElementById('guest-name').focus(), 100);
@@ -491,31 +515,32 @@ document.getElementById('btn-guest-continue').onclick = async () => {
   const name = document.getElementById('guest-name').value.trim();
   const phone = document.getElementById('guest-phone').value.trim();
   if (!name) return showToast('Poné tu nombre o apodo');
-  if (!phone) return showToast('Poné tu número de celu para los matches');
+  if (!phone) return showToast('Poné tu número de celu');
   guestName = name;
   guestPhone = phone;
   isGuestMode = true;
-  try {
-    await signInAnonymously(auth);
-  } catch(e) {
-    showToast('Error. Intentá de nuevo.');
-  }
+  try { await signInAnonymously(auth); }
+  catch(e) { showToast('Error. Intentá de nuevo.'); }
 };
 
-// ── CHIPS ──
-document.querySelectorAll('#chips-drink .chip, #chips-vibe .chip').forEach(chip => {
+// ── CHIPS — MULTI SELECT ──
+document.querySelectorAll('#chips-drink .chip, #chips-vibe .chip, #chips-interests .chip').forEach(chip => {
   chip.addEventListener('click', function() {
-    this.closest('.chip-grid').querySelectorAll('.chip').forEach(c=>c.classList.remove('sel'));
-    this.classList.add('sel');
+    this.classList.toggle('sel');
   });
 });
 
+function getSelectedChips(gridId) {
+  return [...document.querySelectorAll(`#${gridId} .chip.sel`)].map(c => c.dataset.val);
+}
+
 // ── SAVE PROFILE ──
 document.getElementById('btn-save-profile').onclick = async () => {
-  const drink = document.querySelector('#chips-drink .chip.sel')?.dataset.val;
-  const vibe = document.querySelector('#chips-vibe .chip.sel')?.dataset.val;
-  if (!drink) return showToast('Elegí qué tomás hoy');
-  if (!vibe) return showToast('Elegí qué buscás');
+  const drinks = getSelectedChips('chips-drink');
+  const vibes = getSelectedChips('chips-vibe');
+  const interests = getSelectedChips('chips-interests');
+  if (!drinks.length) return showToast('Elegí qué tomás hoy');
+  if (!vibes.length) return showToast('Elegí qué buscás');
 
   const btn = document.getElementById('btn-save-profile');
   btn.disabled = true; btn.textContent = 'Guardando...';
@@ -524,7 +549,7 @@ document.getElementById('btn-save-profile').onclick = async () => {
   if (isGuestMode) {
     name = guestName;
     phone = guestPhone;
-    photoURL = '';
+    photoURL = guestPhotoBase64 || '';
   } else {
     name = (document.getElementById('onb-display-name').textContent || currentUser.displayName || '').split(' ')[0];
     phone = document.getElementById('onb-phone')?.value?.trim() || '';
@@ -532,7 +557,11 @@ document.getElementById('btn-save-profile').onclick = async () => {
   }
 
   const profile = {
-    uid: currentUser.uid, name, phone, drink, vibe, photoURL,
+    uid: currentUser.uid, name, phone, photoURL,
+    drinks, vibes, interests,
+    // legacy fields for backward compat
+    drink: drinks.join(', '),
+    vibe: vibes.join(', '),
     isGuest: isGuestMode, profileComplete: true,
     activeAt: Date.now(), createdAt: Date.now(),
   };
@@ -543,12 +572,12 @@ document.getElementById('btn-save-profile').onclick = async () => {
 
 // ── ENTER APP ──
 function enterApp() {
-  const ha = document.getElementById('header-avatar');
-  ha.innerHTML = avatarHTML(currentProfile, 28, 11);
+  document.getElementById('header-avatar').innerHTML = makeAvatar(currentProfile, 28, 11);
   document.getElementById('header-name').textContent = currentProfile.name.split(' ')[0];
   showScreen('screen-main');
   loadUsers();
   renderProducts();
+  loadMyLikes();
   setDoc(doc(db,'users',currentUser.uid),{activeAt:Date.now()},{merge:true});
 }
 
@@ -568,8 +597,8 @@ function loadUsers() {
 async function loadMyLikes() {
   const s = await getDocs(collection(db,'users',currentUser.uid,'likes'));
   s.forEach(d => myLikes.add(d.id));
+  renderMatchGrid();
 }
-loadMyLikes();
 
 // ── MATCH GRID ──
 function renderMatchGrid() {
@@ -580,9 +609,9 @@ function renderMatchGrid() {
   }
   grid.innerHTML = '';
   allUsers.forEach(u => {
-    const isMatch = myLikes.has(u.uid);
+    const isLiked = myLikes.has(u.uid);
     const card = document.createElement('div');
-    card.className = `person-card${isMatch?' matched':''}`;
+    card.className = `person-card${isLiked?' matched':''}`;
     let photoSection;
     if (u.photoURL) {
       photoSection = `<img class="person-card-photo" src="${u.photoURL}" loading="lazy" alt="${u.name}">`;
@@ -590,13 +619,15 @@ function renderMatchGrid() {
       const c = getColor(u.uid);
       photoSection = `<div class="person-card-initials" style="background:${c.bg};color:${c.text};">${getInitials(u.name)}</div>`;
     }
-    card.innerHTML = `${photoSection}<div class="person-card-info"><div class="person-card-name">${u.name}${isMatch?' ❤️':''}</div><div class="person-card-drink">${u.drink}</div><span class="vibe-pill">${u.vibe}</span></div>`;
+    const drinkLabel = Array.isArray(u.drinks) ? u.drinks[0] : (u.drink||'');
+    const vibeLabel = Array.isArray(u.vibes) ? u.vibes[0] : (u.vibe||'');
+    card.innerHTML = `${photoSection}<div class="person-card-info"><div class="person-card-name">${u.name}${isLiked?' ❤️':''}</div><div class="person-card-drink">${drinkLabel}</div><span class="vibe-pill">${vibeLabel}</span></div>`;
     card.onclick = () => openSheet(u);
     grid.appendChild(card);
   });
 }
 
-// ── SHEET ──
+// ── PROFILE SHEET ──
 window.openSheet = function(u) {
   selectedPersonId = u.uid;
   const wrap = document.getElementById('sheet-avatar-wrap');
@@ -607,48 +638,87 @@ window.openSheet = function(u) {
     wrap.innerHTML = `<div style="width:88px;height:88px;border-radius:50%;border:3px solid #F5E642;background:${c.bg};color:${c.text};display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;margin:0 auto 14px;">${getInitials(u.name)}</div>`;
   }
   document.getElementById('sheet-name').textContent = u.name;
-  document.getElementById('sheet-drink').textContent = u.drink;
-  document.getElementById('sheet-vibe').textContent = u.vibe;
+
+  const drinks = Array.isArray(u.drinks) ? u.drinks : (u.drink ? [u.drink] : []);
+  const vibes = Array.isArray(u.vibes) ? u.vibes : (u.vibe ? [u.vibe] : []);
+  const interests = Array.isArray(u.interests) ? u.interests : [];
+
+  document.getElementById('sheet-drink').innerHTML = tagsHTML(drinks);
+  document.getElementById('sheet-vibe').innerHTML = tagsHTML(vibes);
+  document.getElementById('sheet-interests').innerHTML = tagsHTML(interests);
+  document.getElementById('sheet-row-interests').style.display = interests.length ? 'block' : 'none';
+
   const btn = document.getElementById('sheet-like-btn');
   if (myLikes.has(u.uid)) {
-    btn.className='btn-like sent'; btn.textContent='✓ Interés enviado';
+    btn.className = 'btn-like sent';
+    btn.innerHTML = '✓ Interés enviado';
   } else {
-    btn.className='btn-like'; btn.innerHTML='❤️ Me interesa';
+    btn.className = 'btn-like';
+    btn.innerHTML = '❤️ Me interesa';
   }
   document.getElementById('profile-sheet').classList.add('open');
 };
 
 window.closeSheet = function(e) {
-  if (!e || e.target===document.getElementById('profile-sheet'))
+  if (!e || e.target === document.getElementById('profile-sheet'))
     document.getElementById('profile-sheet').classList.remove('open');
 };
 
 window.doLike = async function() {
-  if (!selectedPersonId || myLikes.has(selectedPersonId)) return;
+  if (!selectedPersonId) return;
+  if (myLikes.has(selectedPersonId)) return;
+
   myLikes.add(selectedPersonId);
+
+  // Update button immediately
+  const btn = document.getElementById('sheet-like-btn');
+  btn.className = 'btn-like sent';
+  btn.innerHTML = '✓ Interés enviado';
+
   await setDoc(doc(db,'users',currentUser.uid,'likes',selectedPersonId),{uid:selectedPersonId,at:Date.now()});
   await setDoc(doc(db,'users',selectedPersonId,'likedBy',currentUser.uid),{uid:currentUser.uid,name:currentProfile.name,at:Date.now()});
+
   const theirLike = await getDoc(doc(db,'users',selectedPersonId,'likes',currentUser.uid));
-  closeSheet();
+
   renderMatchGrid();
+
   if (theirLike.exists()) {
-    const them = allUsers.find(u=>u.uid===selectedPersonId);
+    const them = allUsers.find(u => u.uid === selectedPersonId);
     if (them) {
-      document.getElementById('match-notif-text').textContent = `Vos y ${them.name} se gustaron mutuamente 🎉`;
-      document.getElementById('match-phone-display').textContent = them.phone || 'No dejó número (buscalo!)';
-      document.getElementById('match-notification').classList.add('open');
+      closeSheet();
+      showMatchNotification(them);
     }
   } else {
     showToast('¡Interés enviado! Si hay match te avisamos 🍷');
   }
 };
 
+function showMatchNotification(them) {
+  document.getElementById('match-notif-text').textContent = `Vos y ${them.name} se gustaron mutuamente`;
+  document.getElementById('match-my-avatar').innerHTML = makeAvatar(currentProfile, 72, 28);
+  document.getElementById('match-their-avatar').innerHTML = makeAvatar(them, 72, 28);
+
+  // WhatsApp link
+  const rawPhone = (them.phone || '').replace(/\D/g, '');
+  const waPhone = rawPhone.startsWith('549') ? rawPhone : rawPhone.startsWith('54') ? rawPhone : '549' + rawPhone;
+  const waMsg = encodeURIComponent(`¡Hola ${them.name}! Hicimos match en el Positano Wine Festival 🍷`);
+  const waBtn = document.getElementById('btn-whatsapp-match');
+  if (rawPhone) {
+    waBtn.style.display = 'flex';
+    waBtn.onclick = () => window.open(`https://wa.me/${waPhone}?text=${waMsg}`, '_blank');
+  } else {
+    waBtn.style.display = 'none';
+  }
+
+  document.getElementById('match-notification').classList.add('open');
+}
+
 window.closeMatchNotif = () => document.getElementById('match-notification').classList.remove('open');
 
 // ── TABS ──
 window.switchTab = function(tab) {
-  document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById(`tab-${tab}`).classList.add('active');
   document.getElementById(`tab-btn-${tab}`).classList.add('active');
 };
@@ -695,3 +765,5 @@ document.getElementById('btn-checkout').onclick = async () => {
 </script>
 </body>
 </html>
+HTMLEOF
+echo "OK - $(wc -l < /home/claude/positano-festival/index.html) lines" 
